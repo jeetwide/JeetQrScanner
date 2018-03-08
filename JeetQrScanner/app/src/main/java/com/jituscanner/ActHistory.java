@@ -28,6 +28,7 @@ import com.cjj.MaterialRefreshListener;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.jituscanner.utils.DatabaseHandler;
 import com.jituscanner.utils.Details;
+import com.jituscanner.utils.SwipeHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -132,6 +133,7 @@ public class ActHistory extends BaseActivity {
                 final Details mDetail = listDetails.get(i);
 
                 versionViewHolder.tvtype.setText(i + "# " + mDetail.getType());
+                versionViewHolder.tvdate.setText(mDetail.getTime());
                 // versionViewHolder.tvdetail.setText(mDetail.getDetail());
 
 
@@ -224,9 +226,27 @@ public class ActHistory extends BaseActivity {
         }
 
 
+// Add on Adapter class
+
+
+        public void removeItem(int position) {
+            try {
+                db.deleteContact(listDetails.get(position).getId());
+                listDetails.remove(position);
+                notifyItemRemoved(position);
+                notifyDataSetChanged();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+
+
         class VersionViewHolder extends RecyclerView.ViewHolder {
 
-            TextView tvtype, tvdetail;
+            TextView tvtype, tvdetail,tvdate;
 
             RelativeLayout rlMainLay;
             ImageView img, ivDelete;
@@ -241,7 +261,9 @@ public class ActHistory extends BaseActivity {
                 img = (ImageView) itemView.findViewById(R.id.img);
                 tvtype = (TextView) itemView.findViewById(R.id.tvtype);
                 tvdetail = (TextView) itemView.findViewById(R.id.tvdetail);
+                tvdate = (TextView) itemView.findViewById(R.id.tvdate);
                 ivDelete = (ImageView) itemView.findViewById(R.id.iv_delete);
+                ivDelete.setVisibility(View.GONE);
 
             }
 
@@ -286,11 +308,62 @@ public class ActHistory extends BaseActivity {
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(linearLayoutManager);
+
+            initSwipe();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+
+    private void initSwipe()
+    {
+        try{
+            SwipeHelper swipeHelper = new SwipeHelper(this, recyclerView) {
+                @Override
+                public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+                    underlayButtons.add(new SwipeHelper.UnderlayButton(
+                            "Delete",
+                            0,
+                            Color.parseColor("#6e8bad"),
+                            new SwipeHelper.UnderlayButtonClickListener() {
+                                @Override
+                                public void onClick(int pos) {
+                                    // TODO: onDelete
+
+
+                                    if(listAdapter !=null)
+                                    {
+                                        listAdapter.removeItem(pos);
+                                    }
+                                }
+                            }
+                    ));
+
+                   /* underlayButtons.add(new SwipeHelper.UnderlayButton(
+                            "Transfer",
+                            0,
+                            Color.parseColor("#FF9502"),
+                            new SwipeHelper.UnderlayButtonClickListener() {
+                                @Override
+                                public void onClick(int pos) {
+                                    // TODO: OnTransfer
+                                    App.showLog("=Transfer====pos=="+pos);
+                                }
+                            }
+                    ));*/
+                }
+            };
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
     private void getScannerHistory() {

@@ -174,7 +174,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<Details> getAllDetails() {
         List<Details> detailsArrayList = new ArrayList<Details>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_DETAILS;
+        String selectQuery = "SELECT  * FROM " + TABLE_DETAILS + " ORDER BY "+KEY_ID+" DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

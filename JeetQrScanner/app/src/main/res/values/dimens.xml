@@ -10,6 +10,8 @@
     <dimen name="screen_8d">8dp</dimen>
 
 
+    <dimen name="txt_8s">8dp</dimen>
+    <dimen name="txt_10s">10dp</dimen>
     <dimen name="txt_12s">12dp</dimen>
     <dimen name="txt_14s">14dp</dimen>
     <dimen name="txt_16s">16dp</dimen>

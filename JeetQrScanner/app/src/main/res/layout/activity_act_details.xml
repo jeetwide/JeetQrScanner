@@ -39,7 +39,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/iv_type"
             android:text="Type here"
-            android:fontFamily="amiko_semibold"
+            android:fontFamily="@font/amiko_semibold"
 
             android:textColor="@color/black3"
 
