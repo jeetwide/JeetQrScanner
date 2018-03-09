@@ -124,7 +124,7 @@ public class ActDetails extends BaseActivity {
             if (details.getType().equalsIgnoreCase("weblink")) {
 
                 llContactWebLinkAction.setVisibility(View.VISIBLE);
-                tv_detail.setText("Link : "+details.getDetail());
+                tv_detail.setText(details.getDetail());
                 tv_type_detail.setText("Weblink");
                 iv_type.setImageResource(R.drawable.ic_weblink_black_24dp);
 

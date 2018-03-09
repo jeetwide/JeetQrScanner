@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity {
 
         scanbtn = (Button) findViewById(R.id.scanbtn);
         // btn_delete = (Button) findViewById(R.id.btn_delete);
-        result = (TextView) findViewById(R.id.result);
+       // result = (TextView) findViewById(R.id.result);
         iv_barcode_image = (ImageView) findViewById(R.id.iv_barcode_image);
 
         db = new DatabaseHandler(this);

@@ -132,7 +132,7 @@ public class ActHistory extends BaseActivity {
             try {
                 final Details mDetail = listDetails.get(i);
 
-                versionViewHolder.tvtype.setText(i + "# " + mDetail.getType());
+                versionViewHolder.tvtype.setText(i+1 + "# " + mDetail.getType());
                 versionViewHolder.tvdate.setText(mDetail.getTime());
                 // versionViewHolder.tvdetail.setText(mDetail.getDetail());
 
