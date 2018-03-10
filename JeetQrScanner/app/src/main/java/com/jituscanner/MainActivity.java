@@ -3,6 +3,8 @@ package com.jituscanner;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +24,9 @@ import com.jituscanner.R;
 import com.jituscanner.utils.DatabaseHandler;
 import com.jituscanner.utils.Details;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends BaseActivity {
-    Button scanbtn, btn_delete;
+    Button scanbtn,history, btn_delete;
     TextView result, phone;
     ImageView iv_barcode_image;
     public static final int REQUEST_CODE = 100;
@@ -38,6 +43,7 @@ public class MainActivity extends BaseActivity {
 
     String rawValues = "";
     String displayValues = "";
+    String APP_FOLDERNAME = "jituscanner";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +54,9 @@ public class MainActivity extends BaseActivity {
 
 
         scanbtn = (Button) findViewById(R.id.scanbtn);
+        history = (Button) findViewById(R.id.history);
         // btn_delete = (Button) findViewById(R.id.btn_delete);
-       // result = (TextView) findViewById(R.id.result);
+        result = (TextView) findViewById(R.id.result);
         iv_barcode_image = (ImageView) findViewById(R.id.iv_barcode_image);
 
         db = new DatabaseHandler(this);
@@ -64,6 +71,16 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ScanActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
+
+
+            }
+        });
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainActivity.this,ActHistory.class);
+                startActivity(intent);
 
 
             }
@@ -143,19 +160,26 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-
+    Bitmap bitmap = null;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 
             if (data != null) {
                 final Barcode barcode = data.getParcelableExtra("barcode");
+                bitmap = null;
+                if(data.getParcelableExtra("bitmap") !=null) {
+                     bitmap = (Bitmap) data.getParcelableExtra("bitmap");
+                     if(bitmap !=null)
+                    iv_barcode_image.setImageBitmap(bitmap);
+                }
+
+
                 result.post(new Runnable() {
                     @Override
                     public void run() {
-                       /* result.setText("Display Value:- " + barcode.displayValue
+                        result.setText("Display Value:- " + barcode.displayValue
                                 + "\n \n Raw values:-" + barcode.rawValue);
-*/
                         if (barcode.rawValue != null) {
                             rawValues = barcode.rawValue;
                         }
@@ -198,6 +222,8 @@ public class MainActivity extends BaseActivity {
                         String formattedDate = df.format(c.getTime());
 
                         details.setTime(formattedDate);
+
+
 
                       //  startActivity(new Intent(MainActivity.this,ActDetails.class));
 
@@ -305,6 +331,10 @@ public class MainActivity extends BaseActivity {
                         // DeleteData(details);
                         insertData(details);
 
+                        if(bitmap !=null && details.getTime() !=null) {
+                            saveBitmapSdcard(details.getTime(), bitmap);
+                        }
+
                         Intent intent = new Intent(MainActivity.this, ActDetails.class);
 
                         intent.putExtra("ActHistory", details);
@@ -313,6 +343,44 @@ public class MainActivity extends BaseActivity {
                         // phone.setText(barcode.phone);
                     }
                 });
+            }
+        }
+    }
+
+
+
+    public void saveBitmapSdcard(String filename, Bitmap bitmap) {
+        FileOutputStream out = null;
+        try {
+
+            String directoryPath = Environment.getExternalStorageDirectory() + File.separator + APP_FOLDERNAME;
+
+            File appDir = new File(directoryPath);
+
+            if (!appDir.exists() && !appDir.isDirectory()) {
+                // create empty directory
+                if (appDir.mkdirs()) {
+                    Log.d("===CreateDir===", "App dir created");
+                } else {
+                    Log.d("===CreateDir===", "Unable to create app dir!");
+                }
+            } else {
+                //Log.d("===CreateDir===","App dir already exists");
+            }
+
+
+            out = new FileOutputStream(directoryPath + File.separator + filename+ ".png");
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

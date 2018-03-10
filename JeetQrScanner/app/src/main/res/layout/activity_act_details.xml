@@ -78,6 +78,16 @@
 
         />
 
+
+            <ImageView
+                android:layout_width="200dp"
+                android:id="@+id/iv_barcode_image"
+                android:layout_height="200dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_icon"
+                android:layout_gravity="center_horizontal"
+                />
+
     <LinearLayout
         android:id="@+id/llContactScanAction"
         android:layout_width="match_parent"
@@ -412,6 +422,8 @@
 
         </LinearLayout>
     </LinearLayout>
+
+
 
         </LinearLayout>
 

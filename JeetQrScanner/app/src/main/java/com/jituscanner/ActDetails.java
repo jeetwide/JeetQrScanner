@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 
 import com.jituscanner.utils.Details;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -118,6 +122,8 @@ public class ActDetails extends BaseActivity {
             details = (Details) getIntent().getSerializableExtra("ActHistory");
             //tv_detail.setText(details.getName()+"\n"+details.getCell()+"\n"+details.getEmail());
             tv_current_time.setText(details.getTime());
+
+            getImage(details.getTime());
 
 
 
@@ -484,6 +490,34 @@ public class ActDetails extends BaseActivity {
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+    }
+
+
+    String APP_FOLDERNAME = "jituscanner";
+
+    private void getImage(String strFileName)
+    {
+        try{
+
+
+
+            String filew = Environment.getExternalStorageDirectory() + File.separator + APP_FOLDERNAME + File.separator + strFileName + ".png";
+
+            File appDir = new File(filew);
+            if(appDir.exists())
+            {
+
+                ImageView iv_barcode_image = (ImageView)findViewById(R.id.iv_barcode_image);
+                Bitmap bmp = BitmapFactory.decodeFile(appDir.getAbsolutePath());
+                iv_barcode_image.setImageBitmap(bmp);
+            }
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
